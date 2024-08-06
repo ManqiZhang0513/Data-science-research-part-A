@@ -1,0 +1,94 @@
+pacman::p_load(tidyverse, tidytext, tidymodels, plotly, patchwork, kernlab, gt, parsnip, ggplot2, skimr, dplyr)
+
+# Load master file filtered in Data collection part 1
+mdrfoi2014_2023 <- read.table("filtered_data_2014_2023.txt", header = TRUE, sep = "|", fill = TRUE, quote = "") 
+mdrfoi2014_2023 <- mdrfoi2014_2023 %>%
+    select(MDR_REPORT_KEY, ADVERSE_EVENT_FLAG)
+
+# Load device file from 2014 to 2023
+device2023 <- read.table("DEVICE2023.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2022 <- read.table("DEVICE2022.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2021 <- read.table("DEVICE2021.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2020 <- read.table("DEVICE2020.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2019 <- read.table("DEVICE2019.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2018 <- read.table("DEVICE2018.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2017 <- read.table("DEVICE2017.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2016 <- read.table("DEVICE2016.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2015 <- read.table("DEVICE2015.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+device2014 <- read.table("DEVICE2014.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+
+# Filtered data related to "phakic" and "lens" in Generic name and Brand name
+lens_2023 <- device2023 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2022 <- device2022 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2021 <- device2021 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2020 <- device2020 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2019 <- device2019 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2018 <- device2018 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2017 <- device2017 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2016 <- device2016 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2015 <- device2015 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+lens_2014 <- device2014 %>%
+  filter(str_detect(GENERIC_NAME, regex("PHAKIC", ignore_case = TRUE)) 
+         & str_detect(GENERIC_NAME, regex("lens", ignore_case = TRUE))
+         | str_detect(BRAND_NAME, regex(" phakic", ignore_case = TRUE)) 
+         & str_detect(BRAND_NAME, regex("lens", ignore_case = TRUE)))
+
+# Bind together
+lens2014_2023 <- bind_rows(lens_2014, lens_2015, lens_2016, lens_2017, lens_2018, lens_2019, lens_2020, lens_2021, lens_2022, lens_2023)
+lens2014_2023 <- lens2014_2023 %>%
+    select(MDR_REPORT_KEY,GENERIC_NAME,BRAND_NAME,MANUFACTURER_D_NAME,MODEL_NUMBER)
+
+# Load foitext file from 2014 to 2023
+foitext2023 <- read.table("foitext2023.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2022 <- read.table("foitext2022.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2021 <- read.table("foitext2021.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2020 <- read.table("foitext2020.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2019 <- read.table("foitext2019.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2018 <- read.table("foitext2018.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2017 <- read.table("foitext2017.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2016 <- read.table("foitext2016.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2015 <- read.table("foitext2015.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+foitext2014 <- read.table("foitext2014.txt", header = TRUE, sep = "|", fill = TRUE, quote = "")
+
+# Bind together
+foitext2014_2023 <- bind_rows(foitext2014, foitext2015, foitext2016, foitext2017, foitext2018, foitext2019, foitext2020, foitext2021, foitext2022, foitext2023)
+
+# Merge data by MDR_REPORT_KEY
+lens_device_mdr <- merge(lens2014_2023, mdrfoi2014_2023, by = "MDR_REPORT_KEY")
+lens_full <- merge(lens_device_mdr, foitext2014_2023, by = "MDR_REPORT_KEY")
