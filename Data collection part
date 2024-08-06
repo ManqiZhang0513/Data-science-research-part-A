@@ -1,0 +1,24 @@
+input_file = "mdrfoiThru2023.txt"
+output_file = "filtered_data_2014_2023.txt"
+
+def is_date_in_range(date_str, start_year, end_year):
+    try:
+        parts = date_str.split('/')
+        if len(parts) == 3:
+            year = int(parts[2])
+            return start_year <= year <= end_year
+        else:
+            return False
+    except (ValueError, IndexError):
+        return False
+
+start_year = 2014
+end_year = 2023
+
+with open(input_file, 'r', encoding='latin1') as infile, open(output_file, 'w', encoding='latin1') as outfile:
+    header = infile.readline()
+    outfile.write(header)  # 写入表头
+    for line in infile:
+        columns = line.split('|')
+        if len(columns) > 7 and is_date_in_range(columns[7].strip(), start_year, end_year):
+            outfile.write(line)
