@@ -1,0 +1,337 @@
+#Recode GENERIC NAME
+lens_clean <- lens_full %>%
+  mutate(GENERIC_NAME = case_when(
+    GENERIC_NAME == "PHAKIC TORIC  INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC  TORIC INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC INTRAOCULAR LENS," ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKICTORIC INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKICTORIC  INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC INTRAOCULAR LENS, PRODUCT CODE: QCB" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "IPHAKIC TORIC INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC INTRAOCULAR LENS TO ENABLE SCREEN READER SUPPORT, PRESS CTRL+ALT+Z" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC NTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC INTRAOCULAR LENS, PRODUCT CODE: QCB" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TOORIC INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC   INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC INTRAOCLAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC INTRAOCULAR LENS, PRODUCT CODE: MTA" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKICK TORIC INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TTORIC INTRAOCULAR LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    
+    GENERIC_NAME == "PHAKIC  INTRAOCULAR LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "LENS, INTRAOCULAR, PHAKIC" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC INTRAOCULAR LENSLENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC INTRAOCULAR LENS," ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC INTRAOCULAR LENS, PRODUCT CODE: MTA" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "INTRAOCULAR PHAKIC LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC INTROCULAR LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TINTRAOCULAR LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKICK INTRAOCULAR LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PPHAKIC INTRAOCULAR LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "LENS, INTAOCULAR, PHAKIC" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC INTRAOCULAR  LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC INTRAOCULAR LENSMTA" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC INTRAOCULAR LENSPHAKIC INTRAOCULAR LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "INTRAOCULAR LENS, 86 MTA" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    
+    GENERIC_NAME == "LENS, INTRAOCULAR, PHAKIC - IMPLANTABLE COLLAMER LENS" ~ "PHAKIC INTRAOCULAR LENS",
+    GENERIC_NAME == "PHAKIC TORIC IMPLANTABLE COLLAMER LENS" ~ "PHAKIC TORIC INTRAOCULAR LENS",
+    GENERIC_NAME == "POSTERIOR-CHAMBER INTRAOCULAR LENS, PSEUDOPHAKIC" ~ "PHAKIC INTRAOCULAR LENS",
+    
+    TRUE ~ GENERIC_NAME
+  ))
+
+#Recode MODEL NUMBER
+lens_clean <- lens_clean %>%
+  mutate(MODEL_NUMBER = case_when(
+    str_detect(MODEL_NUMBER, "VTICMO") ~ "VTICMO",
+    
+    str_detect(MODEL_NUMBER, "VTICM5") ~ "VTICM5",
+    
+    str_detect(MODEL_NUMBER, "VICMO") ~ "VICMO",
+    
+    str_detect(MODEL_NUMBER, "VICM5") ~ "VICM5",
+    
+    str_detect(MODEL_NUMBER, "MICL") ~ "MICL",
+    
+    str_detect(MODEL_NUMBER, "VTICH") ~ "VTICH",
+    
+    str_detect(MODEL_NUMBER, "VICM6") ~ "VICM6",
+    
+    str_detect(MODEL_NUMBER, "VICH") ~ "VICH",
+    
+    str_detect(MODEL_NUMBER, "TICM") ~ "TICM",
+    
+    str_detect(MODEL_NUMBER, "VCMO") ~ "VICMO",
+    
+    str_detect(MODEL_NUMBER, "VICM0") ~ "VICMO",
+    
+    str_detect(MODEL_NUMBER, "VTCIMO") ~ "VTICMO",
+    
+    str_detect(MODEL_NUMBER, "VITCMO") ~ "VTICMO",
+    
+    str_detect(MODEL_NUMBER, "VIMCO") ~ "VICMO",
+    
+    str_detect(MODEL_NUMBER, "VITCM5") ~ "VTICM5",
+    
+    str_detect(MODEL_NUMBER, "VTCIMO") ~ "VTICMO",
+    
+    str_detect(MODEL_NUMBER, "VTCMO") ~ "VTICMO",
+    
+    MODEL_NUMBER == "" ~ "UNK",
+    MODEL_NUMBER == "N/A" ~ "UNK",
+    MODEL_NUMBER == "UNKNOWN" ~ "UNK",
+    TRUE ~ "REMOVE"
+  )) %>%
+  filter(MODEL_NUMBER != "REMOVE")
+
+# Extraction year
+lens_clean <- lens_clean %>%
+  mutate(YEAR = year(DATE_RECEIVED))
+
+# Data clean
+library(tidyverse)
+library(tidytext)
+library(stringr)
+library(text)
+
+clean_text <- function(text) {
+  text <- str_to_lower(text)  
+  text <- str_replace_all(text, "[^a-zA-Z\\s]", " ") 
+  text <- str_replace_all(text, "[[:punct:]]", " ")
+  text <- str_replace_all(text, "[0-9]", " ") 
+  text <- str_squish(text) 
+  words <- str_split(text, "\\s+")[[1]]  
+  words <- words[!(words %in% c(stop_words$word, custom_stop_words))]
+  words <- words[words != ""]  
+  return(words)  
+}
+
+# Extract keywords and categorize them
+classify_keywords <- function(ngram) {
+  categories <- c()
+  
+  if (grepl("hurt|painful|ache|suffering|pain", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Pain")
+  }
+  if (grepl("OPTIC BROKEN|OPTIC TORE|OPTIC TORN|HAPTIC TORE|HAPTIC TORN|HAPTIC BROKEN|broke injection|diopter tore broke|break injection|LENS TORE|was torn|due to device|due to the device", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "DeviceProb")
+  }
+  if (grepl("lens rotation|lens decentration|Incorrect size|dislocated|dislocation|luxation|dimensional specification claim|REPOSITIONED", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Decentration/Incorrect size/Phakic Intraocular Lens Rotation")
+  }
+  if (grepl("unreactive fixed pupil|fixed iris|refractive surprise", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "RefractiveProb")
+  }
+  if (grepl("blur|Visual Impairment|visual disturbance|DYSPHOTOPSIAS|foggy vision|REDUCED VISION|glare|halo|flare|dazzling|hazing|lightpoint|Diplopia|Double Vision", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Visual disturbances")
+  }
+  if (grepl("pupillary block glaucoma|Malignant glaucoma|Acute glaucoma|secondary glaucoma|angle closure glaucoma|angle-closure glaucoma|angle closure|angle-closure|pupil block|glaucoma drug|IRIS ATROPHY", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Glaucoma")
+  }
+  if (grepl("pigment dispersion|pigment deposition|IRIS PIGMENT|deposit", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Pigment Dispersion/lens Deposits")
+  }
+  if (grepl("URETTS-ZAVALIA SYNDROME", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Uretts-Zavalia Syndrome")
+  }
+  if (grepl("iop elevation|elevated IOP|increased IOP|IOP increased|Intraocular Pressure Increased|intraocular pressure elevation|ELEVATED INTRAOCULAR PRESSURE|EXCESSIVE VAULTING|increased eye pressure|eye pressure increased|eye pressure elevation|elevated eye pressure", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Intraocular Pressure(IOP) Elevation")
+  }
+  if (grepl("Pupil Ovalisation|IRIS ATROPHY", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Pupil Ovalisation")
+  }
+  if (grepl("Fatigue|Irritation|Sensitivity|Vitreous Floaters|DISCOMFORT|itch|pruritus|dry eye|Excessive Tear|foreign body|Headache|Dizziness", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Discomfort")
+  }
+  if (grepl("Cataract", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Cataract")
+  }
+  if (grepl("swelling|edema|oedema|swollen|Cyst", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Edema")
+  }
+  if (grepl("infection|infected|inflammation|Endophthalmitis|Toxic Anterior Segment Syndrome|tass|Uveitis|Hypopyon|Ulcer|Keratitis|Conjunctivitis|Cyst|UGH SYNDROME", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Inflammation")
+  }
+  if (grepl("bleed|bleeding|Hyphema|red eye", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Bleeding")
+  }
+  if (grepl("Corneal Decompensation|Corneal Damage|Capsular Bag Tear|Iris damage|endothelial damage|endothelial cell injury|Corneal Abrasion|suspensory ligament injury|vitreous humor|Optical Nerve damage", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Eye Injury")
+  }
+  if (grepl("blind|loss eyesight|loss of vision|VISION IS ALMOST GONE", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Loss of Vision")
+  }
+  if (grepl("Endothelial Cell loss|loss of Endothelial Cell", ngram, ignore.case = TRUE)) {
+    categories <- c(categories, "Loss of Corneal Endothelial Cells")
+  }
+  if (length(categories) == 0) {
+    return("OTHER")
+  }
+  return(categories)
+}
+
+# n-grams function
+generate_ngrams <- function(words, n) {
+  ngrams <- unlist(lapply(seq_along(words), function(i) {
+    if (i <= length(words) - n + 1) {
+      paste(words[i:(i + n - 1)], collapse = " ")
+    } else {
+      NULL
+    }
+  }))
+  return(ngrams)
+}
+
+lens_clean_words <- lens_clean %>%
+  mutate(clean_words = map(FOI_TEXT, clean_text),
+         ngrams = map(clean_words, ~ c(
+           generate_ngrams(.x, 1),
+           generate_ngrams(.x, 2),
+           generate_ngrams(.x, 3),
+           generate_ngrams(.x, 4)
+           )),
+         ngrams_class = map(ngrams, ~ unique(unlist(lapply(.x, classify_keywords))))
+  )
+
+# Extraction category
+ngrams_df <- lens_clean_words %>%
+  select(MDR_REPORT_KEY, YEAR, ngrams_class) %>%
+  unnest(ngrams_class)
+
+all_classified <- bind_rows(ngrams_df) %>%
+  rename(category = ngrams_class)
+
+all_classified <- all_classified %>%
+  mutate(category = str_replace_all(category, "c\\(|\\)|\\`", "")) %>%
+  mutate(category = str_split(category, ",")) %>%
+  unnest(category) %>%
+  mutate(category = str_trim(category)) %>%
+  filter(!str_detect(category, "list\\(")) %>%
+  mutate(category = str_extract_all(category, "\"[^\"]*\"")) %>%
+  unnest(category) %>%
+  mutate(category = str_replace_all(category, "\"", "")) 
+
+# Plotting Figure 2
+total_reports_yearly <- all_classified %>%
+  group_by(YEAR) %>%
+  summarise(Total = n(), .groups = 'drop') 
+
+adverse_event_reports <- all_classified %>%
+  filter(ADVERSE_EVENT_FLAG == "Y") %>%
+  group_by(YEAR) %>%
+  summarise(Adverse_Event = n())
+
+report_data <- left_join(total_reports_yearly, adverse_event_reports, by = "YEAR")
+
+report_data_long <- report_data %>%
+  pivot_longer(cols = c(Total, Adverse_Event), names_to = "Report_Type", values_to = "Count")
+
+ggplot(report_data_long, aes(x = factor(YEAR), y = Count, fill = Report_Type)) +
+  geom_bar(stat = "identity", position = "dodge", alpha = 0.7) +
+  labs(title = "Figure 2. Total Reports and Adverse Event Reports by Year",
+       x = "Year",
+       y = "Number of Reports",
+       fill = "Report Type") +
+  theme_minimal()
+
+# Plotting Figure 3
+ae_percent <- report_data %>%
+  mutate(p = Adverse_Event / Total *100)
+
+ggplot(ae_percent, aes(x = YEAR, y = p)) +
+  geom_line() +
+  geom_point() +
+  labs(title = paste("Figure 3. Yearly percentage of Adverse events"),
+       x = "Year",
+       y = "percentage(%) ") +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
+
+# Plotting Figure 4
+yearly_counts <- all_classified %>%
+  group_by(YEAR,category) %>%
+  summarise(Frequency = n(), .groups = 'drop') 
+
+category_by_year <- yearly_counts %>%
+  filter(category != "OTHER")
+
+category_freq <- category_by_year %>%
+  group_by(category) %>%
+  summarise(total_frequency = sum(Frequency), .groups = 'drop') %>%
+  arrange(desc(total_frequency)) %>%
+  filter(category != "OTHER")
+
+top8_categories <- category_freq %>%
+  top_n(8, frequency) %>%
+  pull(category)
+
+top8_data_year <- category_by_year %>%
+  filter(category %in% top8_categories)
+
+other_data_year <- category_by_year %>%
+  filter(!category %in% top8_categories)
+
+top8_perct <- top8_data_year %>%
+  left_join(category_freq, by = "category") %>%
+  mutate(percentage = Frequency/ frequency * 100)
+
+other_perct <- other_data_year %>%
+  left_join(category_freq, by = "category") %>%
+  mutate(percentage = Frequency/ frequency * 100)
+
+ggplot(top8_perct,aes(x = YEAR, y = percentage, color = category, group = category)) +
+  geom_line() +
+  geom_point() +
+  labs(title = paste("Figure 4. Yearly Frequency percentage of top8 Categories"),
+       x = "YEAR",
+       y = "Percentage(%)") +
+  theme(
+    axis.text.x = element_text(angle = 360, hjust = 1),
+    legend.position = "bottom" 
+  )
+
+ggplot(other_perct,aes(x = YEAR, y = percentage, color = category, group = category)) +
+  geom_line() +
+  geom_point() +
+  labs(title = paste("Figure 4. Yearly Frequency percentage of other Categories"),
+       x = "YEAR",
+       y = "Percentage(%)") +
+  theme(
+    axis.text.x = element_text(angle = 360, hjust = 1),
+    legend.position = "bottom"
+  )
+
+# Plotting Figure 5
+model_fre <- lens_clean %>%
+  select(YEAR,MODEL_NUMBER) %>%
+  group_by(YEAR,MODEL_NUMBER) %>%
+  summarise(f = n())
+
+ggplot(model_fre, aes(x = YEAR, y = f, color = MODEL_NUMBER, group = MODEL_NUMBER)) +
+  geom_line() +
+  geom_point() +
+  labs(title = paste("Figure 5. Yearly Frequency of pIOLs Model number"),
+       x = "Year",
+       y = "Frequency ") +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
+
+# Plotting Figure 6
+model_fre_lv <- lens_clean_words %>%
+  filter(str_detect(ngrams_class, "Loss of Vision")) %>%
+  select(YEAR,MODEL_NUMBER) %>%
+  group_by(YEAR,MODEL_NUMBER) %>%
+  summarise(f = n()) 
+
+model_fre_lv_p <- model_fre_lv %>%
+  left_join(model_fre, by = "MODEL_NUMBER") %>%
+  mutate(p = f.x/f.y *100)
+
+ggplot(model_fre_lv_p, aes(x = MODEL_NUMBER, y = p, fill = factor(YEAR))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Figure 6. Percentage of model numbers in reports of Loss of Vision per year",
+       x = "Year",
+       y = "Percentage(%)",
+       fill = "Model number") +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
