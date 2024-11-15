@@ -1,0 +1,77 @@
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(forecast)
+library(tseries)
+# category per month
+monthly_counts <- all_classified %>%
+  group_by(Date,YEAR,category) %>%
+  summarise(Frequency = n(), .groups = 'drop') 
+
+category_by_month <- monthly_counts %>%
+  filter(category != "OTHER") 
+
+# use function complete() to fill in missing dates frequency with 0
+category_by_month_complete0 <- category_by_month %>%
+  select(-YEAR) %>%
+  rename(frequency = Frequency) %>%
+  group_by(category) %>%
+  complete(Date = seq.Date(min(Date), max(Date), by = "month")) %>%
+  fill(category, .direction = "downup") %>%
+  replace_na(list(frequency = 0)) %>%
+  ungroup()
+
+# Define ARIMA function
+predict_arima <- function(category_data) {
+  ts_data <- ts(category_data$frequency, start = c(year(min(category_data$Date)), month(min(category_data$Date))), frequency = 4)
+  fit <- auto.arima(ts_data)
+  forecasted <- forecast(fit, h = 3) # 预测未来6个月
+  forecast_df <- data.frame(
+    Date = seq(max(category_data$Date) %m+% months(1), by = "month", length.out = 6),
+    Point_Forecast = as.numeric(forecasted$mean),
+    Lo_80 = as.numeric(forecasted$lower[,1]),
+    Hi_80 = as.numeric(forecasted$upper[,1]),
+    Lo_95 = as.numeric(forecasted$lower[,2]),
+    Hi_95 = as.numeric(forecasted$upper[,2]),
+    category = unique(category_data$category)
+  )
+  return(forecast_df)
+}
+
+# use ARIMA to predict each category
+arima_forecasts <- category_by_month_complete0 %>%
+  group_by(category) %>%
+  group_map(~predict_arima(.x), .keep = TRUE) %>%
+  bind_rows()
+
+# Combine actual data and forecast data
+combined_data <- category_by_month_complete0 %>%
+  mutate(Point_Forecast = frequency) %>%
+  bind_rows(arima_forecasts)
+
+# set a blank plot list
+plot_list <- list()
+
+# plot each category
+categories <- unique(combined_data$category)
+
+for (category in categories) {
+  category_data <- combined_data %>% filter(category == !!category)
+  
+  p <- ggplot(category_data, aes(x = Date, y = Point_Forecast, group = 1)) +
+    geom_line() +
+    geom_point() +
+    geom_ribbon(data = filter(category_data, !is.na(Lo_80)), aes(ymin = Lo_80, ymax = Hi_80), alpha = 0.2, fill = "blue") +
+    geom_ribbon(data = filter(category_data, !is.na(Lo_95)), aes(ymin = Lo_95, ymax = Hi_95), alpha = 0.1, fill = "blue") +
+    labs(title = paste("ARIMA Forecast for", category),
+         x = "Date",
+         y = "Freq") +
+    theme_minimal()
+  
+  plot_list[[category]] <- p
+}
+
+# Show plots for each category
+for (category in categories) {
+  print(plot_list[[category]])
+}
