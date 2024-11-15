@@ -196,23 +196,19 @@ lens_clean_words <- lens_clean %>%
          ngrams_class = map(ngrams, ~ unique(unlist(lapply(.x, classify_keywords))))
   )
 
+lens_clean_words <- lens_clean_words %>%
+  mutate(YEAR = year(DATE_RECEIVED), MONTH = month(DATE_RECEIVED))
+
+lens_clean_words <- lens_clean_words %>%
+  mutate(Date = as.Date(paste(YEAR, MONTH, "1", sep = "-"), "%Y-%m-%d"))
+
 # Extraction category
 ngrams_df <- lens_clean_words %>%
-  select(MDR_REPORT_KEY, YEAR, ngrams_class) %>%
+  select(MDR_REPORT_KEY, YEAR, MONTH, ADVERSE_EVENT_FLAG, DATE_RECEIVED, Date, ngrams_class) %>%
   unnest(ngrams_class)
 
 all_classified <- bind_rows(ngrams_df) %>%
   rename(category = ngrams_class)
-
-all_classified <- all_classified %>%
-  mutate(category = str_replace_all(category, "c\\(|\\)|\\`", "")) %>%
-  mutate(category = str_split(category, ",")) %>%
-  unnest(category) %>%
-  mutate(category = str_trim(category)) %>%
-  filter(!str_detect(category, "list\\(")) %>%
-  mutate(category = str_extract_all(category, "\"[^\"]*\"")) %>%
-  unnest(category) %>%
-  mutate(category = str_replace_all(category, "\"", "")) 
 
 # Plotting Figure 2
 total_reports_yearly <- all_classified %>%
@@ -304,12 +300,12 @@ ggplot(other_perct,aes(x = YEAR, y = percentage, color = category, group = categ
   )
 
 # Plotting Figure 5
-model_fre <- lens_clean %>%
+model_fre_year <- lens_clean_words %>%
   select(YEAR,MODEL_NUMBER) %>%
   group_by(YEAR,MODEL_NUMBER) %>%
   summarise(f = n())
 
-ggplot(model_fre, aes(x = YEAR, y = f, color = MODEL_NUMBER, group = MODEL_NUMBER)) +
+ggplot(model_fre_year, aes(x = YEAR, y = f, color = MODEL_NUMBER, group = MODEL_NUMBER)) +
   geom_line() +
   geom_point() +
   labs(title = paste("Figure 5. Yearly Frequency of pIOLs Model number"),
@@ -318,6 +314,11 @@ ggplot(model_fre, aes(x = YEAR, y = f, color = MODEL_NUMBER, group = MODEL_NUMBE
   theme(axis.text.x = element_text(angle = 0, hjust = 1))
 
 # Plotting Figure 6
+model_fre <- lens_clean_words %>%
+  select(YEAR,MODEL_NUMBER) %>%
+  group_by(MODEL_NUMBER) %>%
+  summarise(f = n())
+
 model_fre_lv <- lens_clean_words %>%
   filter(str_detect(ngrams_class, "Loss of Vision")) %>%
   select(YEAR,MODEL_NUMBER) %>%
@@ -326,7 +327,7 @@ model_fre_lv <- lens_clean_words %>%
 
 model_fre_lv_p <- model_fre_lv %>%
   left_join(model_fre, by = "MODEL_NUMBER") %>%
-  mutate(p = f.x/f.y *100)
+  mutate(p = f.x/f.y *100) 
 
 ggplot(model_fre_lv_p, aes(x = MODEL_NUMBER, y = p, fill = factor(YEAR))) +
   geom_bar(stat = "identity", position = "dodge") +
